@@ -3,12 +3,14 @@ import Container from '@/components/Container.astro';
 
 const pathname = Astro.url.pathname;
 
-const links = [
+type NavItem = { href: string; label: string; sensitive?: boolean; revealLink?: boolean };
+
+const links: NavItem[] = [
   { href: '/', label: 'Home', revealLink: true },
   { href: '/resume', label: 'Resume', revealLink: true },
   { href: '/projects', label: 'Projects', sensitive: true, revealLink: true },
   { href: '/#contact', label: 'Contact', sensitive: true, revealLink: true },
-] as const;
+];
 
 function isActive(href: string): boolean {
   const pathPart = href.split('?')[0].split('#')[0];
