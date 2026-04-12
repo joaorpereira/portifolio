@@ -3,6 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+  /** Hide gated content until client script runs (reduces flash when locked). */
+  html[data-reveal='0'] [data-sensitive] {
+    display: none !important;
+  }
+
+  html[data-reveal='0'] a[data-sensitive-card] {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  html[data-reveal='1'] [data-reveal-fallback] {
+    display: none !important;
+  }
+
   html {
     @apply scroll-smooth antialiased;
   }

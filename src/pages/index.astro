@@ -4,10 +4,8 @@ import ContactSection from '@/components/ContactSection.astro';
 import { resume } from '@/data/resume';
 import { withHttps } from '@/utils/links';
 import { resolveMediaSrc } from '@/utils/media';
-import { isSensitiveContentRevealed, withSensitiveQuery } from '@/utils/sensitiveAccess';
 
 const { basics, experience, projects } = resume;
-const revealSensitive = isSensitiveContentRevealed(Astro.url);
 
 const highlights = [
   {
@@ -75,23 +73,21 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a
-            href={revealSensitive ? withSensitiveQuery('/resume', Astro.url) : '/resume'}
+            href="/resume"
+            data-reveal-link
             class="inline-flex items-center justify-center rounded-lg bg-ink-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ink-800 dark:bg-white dark:text-ink-950 dark:hover:bg-ink-100"
           >
             View resume
           </a>
-          {
-            revealSensitive && (
-              <a
-                href={withHttps(basics.github)}
-                class="inline-flex items-center justify-center rounded-lg border border-ink-300 bg-transparent px-4 py-2.5 text-sm font-semibold text-ink-900 transition hover:border-ink-400 hover:bg-ink-100 dark:border-ink-600 dark:text-ink-100 dark:hover:border-ink-500 dark:hover:bg-ink-900"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                GitHub
-              </a>
-            )
-          }
+          <a
+            data-sensitive
+            href={withHttps(basics.github)}
+            class="inline-flex items-center justify-center rounded-lg border border-ink-300 bg-transparent px-4 py-2.5 text-sm font-semibold text-ink-900 transition hover:border-ink-400 hover:bg-ink-100 dark:border-ink-600 dark:text-ink-100 dark:hover:border-ink-500 dark:hover:bg-ink-900"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            GitHub
+          </a>
         </div>
       </div>
     </div>
@@ -111,18 +107,17 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
     <ul class="mt-4 list-inside list-disc space-y-2 text-sm text-ink-600 dark:text-ink-300">
       {currentRole.highlights?.slice(0, 3).map((h) => <li class="pl-1">{h}</li>)}
     </ul>
-    {
-      revealSensitive ? (
-        <a
-          href={withSensitiveQuery('/projects', Astro.url)}
-          class="mt-4 inline-block text-sm font-semibold text-accent underline-offset-4 hover:underline dark:text-accent-muted"
-        >
-          See selected projects →
-        </a>
-      ) : (
-        <p class="mt-4 text-sm font-semibold text-ink-600 dark:text-ink-300">Selected projects are highlighted below.</p>
-      )
-    }
+    <a
+      data-sensitive
+      data-reveal-link
+      href="/projects"
+      class="mt-4 inline-block text-sm font-semibold text-accent underline-offset-4 hover:underline dark:text-accent-muted"
+    >
+      See selected projects →
+    </a>
+    <p data-reveal-fallback class="mt-4 text-sm font-semibold text-ink-600 dark:text-ink-300">
+      Selected projects are highlighted below.
+    </p>
   </section>
 
   <section class="mt-16 animate-fade-up" style="animation-delay: 120ms" aria-labelledby="highlights-heading">
@@ -146,16 +141,14 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
       <h2 id="home-projects-heading" class="font-display text-xl font-semibold text-ink-950 dark:text-ink-50">
         Projects
       </h2>
-      {
-        revealSensitive && (
-          <a
-            href={withSensitiveQuery('/projects', Astro.url)}
-            class="text-sm font-semibold text-accent underline-offset-4 hover:underline dark:text-accent-muted"
-          >
-            All projects
-          </a>
-        )
-      }
+      <a
+        data-sensitive
+        data-reveal-link
+        href="/projects"
+        class="text-sm font-semibold text-accent underline-offset-4 hover:underline dark:text-accent-muted"
+      >
+        All projects
+      </a>
     </div>
     <ul class="mt-8 grid gap-6 sm:grid-cols-2">
       {
@@ -168,90 +161,50 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
             'transition hover:border-ink-300 hover:shadow-lg dark:hover:border-accent/45 dark:hover:shadow-xl dark:hover:shadow-black/55';
           return (
             <li>
-              {revealSensitive ? (
-                <a
-                  href={withSensitiveQuery('/projects', Astro.url)}
-                  class:list={[cardShell, cardInteractive, 'group']}
-                >
-                  <div class="relative aspect-[16/10] w-full overflow-hidden border-b border-ink-200 bg-ink-100 dark:border-ink-800 dark:bg-ink-950">
-                    {img ? (
+              <a
+                data-sensitive-card
+                data-reveal-link
+                href="/projects"
+                class:list={[cardShell, cardInteractive, 'group']}
+              >
+                <div class="relative aspect-[16/10] w-full overflow-hidden border-b border-ink-200 bg-ink-100 dark:border-ink-800 dark:bg-ink-950">
+                  {img ? (
+                    <img
+                      src={img}
+                      alt=""
+                      width={640}
+                      height={400}
+                      class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div
+                      class="flex h-full w-full items-center justify-center bg-ink-100 p-6 dark:bg-ink-950"
+                      aria-hidden="true"
+                    >
                       <img
-                        src={img}
+                        src="/images/project-placeholder.svg"
                         alt=""
                         width={640}
                         height={400}
-                        class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                        class="h-full w-full max-h-full object-contain opacity-90 transition duration-300 group-hover:opacity-100 dark:opacity-95"
                         loading="lazy"
                         decoding="async"
                       />
-                    ) : (
-                      <div
-                        class="flex h-full w-full items-center justify-center bg-ink-100 p-6 dark:bg-ink-950"
-                        aria-hidden="true"
-                      >
-                        <img
-                          src="/images/project-placeholder.svg"
-                          alt=""
-                          width={640}
-                          height={400}
-                          class="h-full w-full max-h-full object-contain opacity-90 transition duration-300 group-hover:opacity-100 dark:opacity-95"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div class="flex flex-1 flex-col bg-white p-5 sm:p-6 dark:bg-ink-900">
-                    <h3 class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">{p.name}</h3>
-                    {subtitle && (
-                      <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">{subtitle}</p>
-                    )}
-                    {p.summary && (
-                      <p class="mt-3 text-sm leading-relaxed text-ink-700 dark:text-ink-200">{p.summary}</p>
-                    )}
-                  </div>
-                </a>
-              ) : (
-                <article class:list={[cardShell, 'cursor-default']}>
-                  <div class="relative aspect-[16/10] w-full overflow-hidden border-b border-ink-200 bg-ink-100 dark:border-ink-800 dark:bg-ink-950">
-                    {img ? (
-                      <img
-                        src={img}
-                        alt=""
-                        width={640}
-                        height={400}
-                        class="h-full w-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : (
-                      <div
-                        class="flex h-full w-full items-center justify-center bg-ink-100 p-6 dark:bg-ink-950"
-                        aria-hidden="true"
-                      >
-                        <img
-                          src="/images/project-placeholder.svg"
-                          alt=""
-                          width={640}
-                          height={400}
-                          class="h-full w-full max-h-full object-contain opacity-90 dark:opacity-95"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div class="flex flex-1 flex-col bg-white p-5 sm:p-6 dark:bg-ink-900">
-                    <h3 class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">{p.name}</h3>
-                    {subtitle && (
-                      <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">{subtitle}</p>
-                    )}
-                    {p.summary && (
-                      <p class="mt-3 text-sm leading-relaxed text-ink-700 dark:text-ink-200">{p.summary}</p>
-                    )}
-                  </div>
-                </article>
-              )}
+                    </div>
+                  )}
+                </div>
+                <div class="flex flex-1 flex-col bg-white p-5 sm:p-6 dark:bg-ink-900">
+                  <h3 class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">{p.name}</h3>
+                  {subtitle && (
+                    <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">{subtitle}</p>
+                  )}
+                  {p.summary && (
+                    <p class="mt-3 text-sm leading-relaxed text-ink-700 dark:text-ink-200">{p.summary}</p>
+                  )}
+                </div>
+              </a>
             </li>
           );
         })
@@ -259,16 +212,12 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
     </ul>
   </section>
 
-  {
-    revealSensitive && (
-      <div class="mt-16 animate-fade-up" style="animation-delay: 200ms">
-        <ContactSection
-          email={basics.email}
-          github={basics.github}
-          linkedin={basics.linkedin}
-          resumePdf={basics.resumePdf}
-        />
-      </div>
-    )
-  }
+  <div data-sensitive class="mt-16 animate-fade-up" style="animation-delay: 200ms">
+    <ContactSection
+      email={basics.email}
+      github={basics.github}
+      linkedin={basics.linkedin}
+      resumePdf={basics.resumePdf}
+    />
+  </div>
 </BaseLayout>

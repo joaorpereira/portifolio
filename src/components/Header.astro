@@ -1,30 +1,14 @@
 ---
 import Container from '@/components/Container.astro';
-import { withSensitiveQuery } from '@/utils/sensitiveAccess';
 
-interface Props {
-  revealSensitive: boolean;
-  requestUrl: URL;
-}
-
-const { revealSensitive, requestUrl } = Astro.props;
 const pathname = Astro.url.pathname;
 
-type NavItem = { href: string; label: string; sensitive?: boolean };
-
-const navDefs: NavItem[] = [
-  { href: '/', label: 'Home' },
-  { href: '/resume', label: 'Resume' },
-  { href: '/projects', label: 'Projects', sensitive: true },
-  { href: '/#contact', label: 'Contact', sensitive: true },
-];
-
-const links = navDefs
-  .filter((item) => !item.sensitive || revealSensitive)
-  .map((item) => ({
-    href: revealSensitive ? withSensitiveQuery(item.href, requestUrl) : item.href,
-    label: item.label,
-  }));
+const links = [
+  { href: '/', label: 'Home', revealLink: true },
+  { href: '/resume', label: 'Resume', revealLink: true },
+  { href: '/projects', label: 'Projects', sensitive: true, revealLink: true },
+  { href: '/#contact', label: 'Contact', sensitive: true, revealLink: true },
+] as const;
 
 function isActive(href: string): boolean {
   const pathPart = href.split('?')[0].split('#')[0];
@@ -45,7 +29,8 @@ function isActive(href: string): boolean {
 >
   <Container class="flex h-14 items-center justify-between gap-4 sm:h-16">
     <a
-      href={revealSensitive ? withSensitiveQuery('/', requestUrl) : '/'}
+      href="/"
+      data-reveal-link
       class="font-display text-sm font-semibold tracking-tight text-ink-950 transition hover:text-accent dark:text-ink-50 dark:hover:text-accent-muted sm:text-base"
     >
       JP<span class="text-ink-500 dark:text-ink-400">.</span>
@@ -54,10 +39,11 @@ function isActive(href: string): boolean {
     <nav aria-label="Primary" class="flex items-center gap-1 sm:gap-2">
       <ul class="flex flex-wrap items-center justify-end gap-0.5 text-sm sm:gap-1 sm:text-[0.9375rem]">
         {
-          links.map(({ href, label }) => (
-            <li>
+          links.map(({ href, label, sensitive, revealLink }) => (
+            <li {...(sensitive ? { 'data-sensitive': '' } : {})}>
               <a
                 href={href}
+                {...(revealLink ? { 'data-reveal-link': '' } : {})}
                 class:list={[
                   'rounded-md px-2 py-1.5 font-medium transition-colors sm:px-2.5',
                   isActive(href)

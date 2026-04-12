@@ -3,13 +3,12 @@ import Container from '@/components/Container.astro';
 import { withHttps } from '@/utils/links';
 
 interface Props {
-  revealSensitive: boolean;
   github: string;
   linkedin: string;
   email: string;
 }
 
-const { revealSensitive, github, linkedin, email } = Astro.props;
+const { github, linkedin, email } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
@@ -18,39 +17,35 @@ const year = new Date().getFullYear();
     <p class="text-sm text-ink-600 dark:text-ink-300">
       © {year} João Paulo Rodrigues Pereira
     </p>
-    {
-      revealSensitive && (
-        <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium">
-          <li>
-            <a
-              class="text-ink-800 underline-offset-4 transition hover:text-accent hover:underline dark:text-ink-200 dark:hover:text-accent-muted"
-              href={withHttps(github)}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              GitHub
-            </a>
-          </li>
-          <li>
-            <a
-              class="text-ink-800 underline-offset-4 transition hover:text-accent hover:underline dark:text-ink-200 dark:hover:text-accent-muted"
-              href={withHttps(linkedin)}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              LinkedIn
-            </a>
-          </li>
-          <li>
-            <a
-              class="text-ink-800 underline-offset-4 transition hover:text-accent hover:underline dark:text-ink-200 dark:hover:text-accent-muted"
-              href={`mailto:${email}`}
-            >
-              Email
-            </a>
-          </li>
-        </ul>
-      )
-    }
+    <ul data-sensitive class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium">
+      <li>
+        <a
+          class="text-ink-800 underline-offset-4 transition hover:text-accent hover:underline dark:text-ink-200 dark:hover:text-accent-muted"
+          href={withHttps(github)}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          GitHub
+        </a>
+      </li>
+      <li>
+        <a
+          class="text-ink-800 underline-offset-4 transition hover:text-accent hover:underline dark:text-ink-200 dark:hover:text-accent-muted"
+          href={withHttps(linkedin)}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          LinkedIn
+        </a>
+      </li>
+      <li>
+        <a
+          class="text-ink-800 underline-offset-4 transition hover:text-accent hover:underline dark:text-ink-200 dark:hover:text-accent-muted"
+          href={`mailto:${email}`}
+        >
+          Email
+        </a>
+      </li>
+    </ul>
   </Container>
 </footer>

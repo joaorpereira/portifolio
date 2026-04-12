@@ -5,7 +5,6 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Container from '@/components/Container.astro';
 import type { Resume } from '@/types/resume';
-import { isSensitiveContentRevealed } from '@/utils/sensitiveAccess';
 
 interface Props {
   title: string;
@@ -15,8 +14,6 @@ interface Props {
 }
 
 const { title, description, path = '/', resume } = Astro.props;
-const requestUrl = Astro.url;
-const revealSensitive = isSensitiveContentRevealed(requestUrl);
 ---
 
 <!doctype html>
@@ -24,6 +21,7 @@ const revealSensitive = isSensitiveContentRevealed(requestUrl);
   <head>
     <SEO title={title} description={description} path={path} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script src="/reveal-gate.js" is:inline></script>
     <script is:inline>
       (function () {
         try {
@@ -37,18 +35,13 @@ const revealSensitive = isSensitiveContentRevealed(requestUrl);
     </script>
   </head>
   <body class="flex min-h-full flex-col">
-    <Header revealSensitive={revealSensitive} requestUrl={requestUrl} />
+    <Header />
     <main id="main" class="flex-1 py-10 sm:py-14">
       <Container>
         <slot />
       </Container>
     </main>
-    <Footer
-      revealSensitive={revealSensitive}
-      github={resume.basics.github}
-      linkedin={resume.basics.linkedin}
-      email={resume.basics.email}
-    />
+    <Footer github={resume.basics.github} linkedin={resume.basics.linkedin} email={resume.basics.email} />
     <script is:inline>
       (function () {
         var btn = document.getElementById('theme-toggle');
