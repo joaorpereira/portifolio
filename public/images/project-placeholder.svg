@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="pp-bg" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#283630" />
+      <stop offset="1" stop-color="#1e2b26" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#pp-bg)" />
+  <rect
+    x="196"
+    y="96"
+    width="248"
+    height="208"
+    rx="12"
+    stroke="#567d6c"
+    stroke-opacity="0.55"
+    stroke-width="2"
+  />
+  <path
+    d="M232 268h176M232 268l52-72 44 56 48-64 44 80"
+    stroke="#8fb0a0"
+    stroke-opacity="0.65"
+    stroke-width="2.25"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="408" cy="148" r="22" stroke="#8fb0a0" stroke-opacity="0.5" stroke-width="2" />
+</svg>

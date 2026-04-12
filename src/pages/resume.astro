@@ -1,0 +1,92 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import ExperienceCard from '@/components/ExperienceCard.astro';
+import SkillCategory from '@/components/SkillCategory.astro';
+import { resume } from '@/data/resume';
+---
+
+<BaseLayout
+  title="Resume"
+  description="Experience, skills, education, certifications, languages, and background—single role-focused resume view."
+  path="/resume"
+  resume={resume}
+>
+  <PageHeader title="Resume" />
+
+  <section class="space-y-4" aria-labelledby="about-summary">
+    <h2 id="about-summary" class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">
+      About
+    </h2>
+    <p class="max-w-2xl text-base leading-relaxed text-ink-700 dark:text-ink-200">
+      {resume.basics.summary}
+    </p>
+  </section>
+
+  <section class="mt-14 space-y-4" aria-labelledby="exp-heading">
+    <h2 id="exp-heading" class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">
+      Experience
+    </h2>
+    <div class="space-y-6">
+      {resume.experience.map((job) => <ExperienceCard job={job} />)}
+    </div>
+  </section>
+
+  <section class="mt-14 space-y-4" aria-labelledby="skills-heading">
+    <h2 id="skills-heading" class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">
+      Skills
+    </h2>
+    <div class="space-y-6">
+      {resume.skillCategories.map((cat) => <SkillCategory name={cat.name} skills={cat.skills} />)}
+    </div>
+    <div class="mt-8 rounded-2xl border border-dashed border-ink-300 bg-ink-50/50 p-6 dark:border-ink-700 dark:bg-ink-950/40">
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-ink-600 dark:text-ink-300">
+        All skills (flat)
+      </h3>
+      <p class="mt-3 text-sm leading-relaxed text-ink-700 dark:text-ink-200">
+        {resume.skills.join(' · ')}
+      </p>
+    </div>
+  </section>
+
+  <section class="mt-14 space-y-4" aria-labelledby="edu-degrees">
+    <h2 id="edu-degrees" class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">
+      Education & credentials
+    </h2>
+    <ul class="space-y-3">
+      {
+        resume.education.map((e) => (
+          <li class="rounded-2xl border border-ink-200 bg-white p-5 dark:border-ink-800 dark:bg-ink-900/50 sm:p-6">
+            <p class="font-medium text-ink-950 dark:text-ink-50">{e.degree}</p>
+            <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">{e.institution}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-10 space-y-4" aria-labelledby="edu-certs">
+    <h2 id="edu-certs" class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">
+      Certifications
+    </h2>
+    <ul class="list-inside list-disc space-y-2 text-sm text-ink-700 dark:text-ink-200">
+      {resume.certifications.map((c) => <li class="pl-1">{c}</li>)}
+    </ul>
+  </section>
+
+  <section class="mt-10 space-y-4" aria-labelledby="edu-lang">
+    <h2 id="edu-lang" class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50">
+      Languages
+    </h2>
+    <dl class="grid gap-3 sm:grid-cols-3">
+      {
+        resume.languages.map((l) => (
+          <div class="rounded-xl border border-ink-200 bg-white px-4 py-3 dark:border-ink-800 dark:bg-ink-900/50">
+            <dt class="text-sm font-semibold text-ink-950 dark:text-ink-50">{l.language}</dt>
+            <dd class="text-sm text-ink-600 dark:text-ink-300">{l.level}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+</BaseLayout>

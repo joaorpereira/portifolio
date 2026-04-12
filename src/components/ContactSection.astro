@@ -1,0 +1,74 @@
+---
+import { withHttps, mailto } from '@/utils/links';
+
+interface Props {
+  email: string;
+  github: string;
+  linkedin: string;
+  resumePdf?: string;
+  id?: string;
+}
+
+const { email, github, linkedin, resumePdf, id = 'contact' } = Astro.props;
+---
+
+<section
+  id={id}
+  class="scroll-mt-24 rounded-2xl border border-ink-200 bg-white p-6 shadow-sm dark:border-ink-800 dark:bg-ink-900/40 sm:p-8"
+  aria-labelledby="contact-heading"
+>
+  <h2
+    id="contact-heading"
+    class="font-display text-xl font-semibold tracking-tight text-ink-950 dark:text-ink-50"
+  >
+    Contact
+  </h2>
+  <p class="mt-2 max-w-xl text-sm leading-relaxed text-ink-600 dark:text-ink-300 sm:text-base">
+    Open to roles that value performance, accessibility, and thoughtful product engineering. Prefer async
+    first—email is best for a fast response.
+  </p>
+
+  <ul class="mt-6 flex flex-col gap-3 text-sm font-medium sm:flex-row sm:flex-wrap sm:gap-4">
+    <li>
+      <a
+        class="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-ink-50 px-4 py-2.5 text-ink-900 transition hover:border-accent hover:bg-white dark:border-ink-700 dark:bg-ink-950 dark:text-ink-100 dark:hover:border-accent-muted dark:hover:bg-ink-900"
+        href={mailto(email)}
+      >
+        {email}
+      </a>
+    </li>
+    <li>
+      <a
+        class="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-ink-50 px-4 py-2.5 text-ink-900 transition hover:border-accent hover:bg-white dark:border-ink-700 dark:bg-ink-950 dark:text-ink-100 dark:hover:border-accent-muted dark:hover:bg-ink-900"
+        href={withHttps(github)}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        GitHub
+      </a>
+    </li>
+    <li>
+      <a
+        class="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-ink-50 px-4 py-2.5 text-ink-900 transition hover:border-accent hover:bg-white dark:border-ink-700 dark:bg-ink-950 dark:text-ink-100 dark:hover:border-accent-muted dark:hover:bg-ink-900"
+        href={withHttps(linkedin)}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        LinkedIn
+      </a>
+    </li>
+    {
+      resumePdf && (
+        <li>
+          <a
+            class="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-ink-50 px-4 py-2.5 text-ink-900 transition hover:border-accent hover:bg-white dark:border-ink-700 dark:bg-ink-950 dark:text-ink-100 dark:hover:border-accent-muted dark:hover:bg-ink-900"
+            href={resumePdf}
+            download
+          >
+            Download resume (PDF)
+          </a>
+        </li>
+      )
+    }
+  </ul>
+</section>

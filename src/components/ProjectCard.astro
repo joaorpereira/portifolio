@@ -1,0 +1,126 @@
+---
+import type { PortfolioProject } from '@/types/resume';
+import { withHttps } from '@/utils/links';
+import { getVideoEmbedSrc, resolveMediaSrc } from '@/utils/media';
+
+interface Props {
+  project: PortfolioProject;
+}
+
+const { project } = Astro.props;
+const videoRaw = project.video?.trim() ? project.video.trim() : '';
+const embed = videoRaw ? getVideoEmbedSrc(videoRaw) : null;
+const imageSrc = project.image?.trim() ? resolveMediaSrc(project.image.trim()) : '';
+---
+
+<article
+  class="flex h-full flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-sm transition hover:border-ink-300 dark:border-ink-800 dark:bg-ink-900/50 dark:hover:border-ink-700"
+>
+  {
+    embed && (
+      <div class="border-b border-ink-100 dark:border-ink-800">
+        {embed.kind === 'iframe' ? (
+          <div class="relative aspect-video w-full bg-ink-950">
+            <iframe
+              src={embed.src}
+              title={`${project.name} demo video`}
+              class="absolute inset-0 h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+            />
+          </div>
+        ) : (
+          <video
+            class="aspect-video w-full bg-ink-950 object-contain"
+            controls
+            playsinline
+            preload="metadata"
+          >
+            <source src={embed.src} />
+          </video>
+        )}
+      </div>
+    )
+  }
+
+  {
+    !embed && imageSrc && (
+      <div class="border-b border-ink-100 dark:border-ink-800">
+        <img
+          src={imageSrc}
+          alt=""
+          width={960}
+          height={540}
+          class="aspect-video w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    )
+  }
+
+  <div class="flex flex-1 flex-col p-6 sm:p-7">
+    <div class="flex flex-1 flex-col gap-3">
+      <div>
+        <h2 class="font-display text-lg font-semibold text-ink-950 dark:text-ink-50 sm:text-xl">
+          {project.name}
+        </h2>
+        {(project.company || project.period) && (
+          <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">
+            {[project.company, project.period].filter(Boolean).join(' · ')}
+          </p>
+        )}
+      </div>
+
+      {
+        project.summary && (
+          <p class="text-sm leading-relaxed text-ink-700 dark:text-ink-200">{project.summary}</p>
+        )
+      }
+
+      <ul class="list-inside list-disc space-y-2 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+        {project.highlights.map((h) => (
+          <li class="pl-1">{h}</li>
+        ))}
+      </ul>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        {
+          project.technologies.map((t) => (
+            <span class="rounded-full border border-ink-200 bg-ink-50 px-2.5 py-0.5 text-xs font-medium text-ink-700 dark:border-ink-700 dark:bg-ink-950 dark:text-ink-200">
+              {t}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+
+    {
+      (project.links?.live || project.links?.repo) && (
+        <div class="mt-6 flex flex-wrap gap-3 border-t border-ink-100 pt-5 text-sm font-medium dark:border-ink-800">
+          {project.links?.live && (
+            <a
+              href={withHttps(project.links.live)}
+              class="text-accent underline-offset-4 transition hover:underline dark:text-accent-muted"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Live site
+            </a>
+          )}
+          {project.links?.repo && (
+            <a
+              href={withHttps(project.links.repo)}
+              class="text-accent underline-offset-4 transition hover:underline dark:text-accent-muted"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Repository
+            </a>
+          )}
+        </div>
+      )
+    }
+  </div>
+</article>

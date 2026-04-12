@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# After adding a sitemap integration, add:
+# Sitemap: https://your-domain.com/sitemap-index.xml

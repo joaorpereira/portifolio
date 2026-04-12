@@ -1,0 +1,111 @@
+---
+import Container from '@/components/Container.astro';
+import { withSensitiveQuery } from '@/utils/sensitiveAccess';
+
+interface Props {
+  revealSensitive: boolean;
+  requestUrl: URL;
+}
+
+const { revealSensitive, requestUrl } = Astro.props;
+const pathname = Astro.url.pathname;
+
+type NavItem = { href: string; label: string; sensitive?: boolean };
+
+const navDefs: NavItem[] = [
+  { href: '/', label: 'Home' },
+  { href: '/resume', label: 'Resume' },
+  { href: '/projects', label: 'Projects', sensitive: true },
+  { href: '/#contact', label: 'Contact', sensitive: true },
+];
+
+const links = navDefs
+  .filter((item) => !item.sensitive || revealSensitive)
+  .map((item) => ({
+    href: revealSensitive ? withSensitiveQuery(item.href, requestUrl) : item.href,
+    label: item.label,
+  }));
+
+function isActive(href: string): boolean {
+  const pathPart = href.split('?')[0].split('#')[0];
+  if (pathPart === '/') return pathname === '/';
+  return pathname === pathPart || pathname.startsWith(`${pathPart}/`);
+}
+---
+
+<a
+  href="#main"
+  class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink-950 focus:px-3 focus:py-2 focus:text-sm focus:text-white dark:focus:bg-white dark:focus:text-ink-950"
+>
+  Skip to content
+</a>
+
+<header
+  class="sticky top-0 z-40 border-b border-ink-200/80 bg-white dark:border-ink-800 dark:bg-ink-950"
+>
+  <Container class="flex h-14 items-center justify-between gap-4 sm:h-16">
+    <a
+      href={revealSensitive ? withSensitiveQuery('/', requestUrl) : '/'}
+      class="font-display text-sm font-semibold tracking-tight text-ink-950 transition hover:text-accent dark:text-ink-50 dark:hover:text-accent-muted sm:text-base"
+    >
+      JP<span class="text-ink-500 dark:text-ink-400">.</span>
+    </a>
+
+    <nav aria-label="Primary" class="flex items-center gap-1 sm:gap-2">
+      <ul class="flex flex-wrap items-center justify-end gap-0.5 text-sm sm:gap-1 sm:text-[0.9375rem]">
+        {
+          links.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class:list={[
+                  'rounded-md px-2 py-1.5 font-medium transition-colors sm:px-2.5',
+                  isActive(href)
+                    ? 'bg-ink-200/80 text-ink-950 dark:bg-ink-800 dark:text-ink-50'
+                    : 'text-ink-600 hover:bg-ink-100 hover:text-ink-950 dark:text-ink-300 dark:hover:bg-ink-900 dark:hover:text-white',
+                ]}
+                aria-current={isActive(href) ? 'page' : undefined}
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <button
+        type="button"
+        id="theme-toggle"
+        class="ml-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-ink-200 bg-white text-ink-700 shadow-sm transition hover:border-ink-300 hover:bg-ink-50 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-200 dark:hover:border-ink-600 dark:hover:bg-ink-800"
+        aria-label="Toggle dark mode"
+        title="Toggle theme"
+      >
+        <svg
+          class="h-[1.1rem] w-[1.1rem] dark:hidden"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+        </svg>
+        <svg
+          class="hidden h-[1.1rem] w-[1.1rem] dark:block"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+        </svg>
+      </button>
+    </nav>
+  </Container>
+</header>
