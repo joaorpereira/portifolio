@@ -6,6 +6,15 @@ Static, recruiter-friendly portfolio built with **Astro**, **TypeScript**, and *
 
 - **Node.js** 18.17+ (or 22+ if you prefer aligning with the latest Astro CLI)
 
+## Environment
+
+Use a repo-root **`.env`** for `npm run dev` and for variables that **`infra/deploy.sh`** sources (bucket, distribution ID, AWS profile). Add **`.env.production`** for `npm run build` / `astro build`: Vite loads `.env` then `.env.production`, so production `PUBLIC_*` values can match or override local ones. Both files are gitignored; start from [`.env.example`](./.env.example).
+
+- **`PUBLIC_CONTACT_*`** — email, GitHub, and LinkedIn strings merged into `resume` at build time (not stored in `resume.json`).
+- **`PUBLIC_SENSITIVE_QUERY_KEY`** / **`PUBLIC_SENSITIVE_QUERY_VALUE`** — URL query used by the client-side reveal gate (also baked into the built HTML/JS).
+
+Anything prefixed with `PUBLIC_` is embedded in the production bundle; env files keep values out of **git**, not out of the deployed static files.
+
 ## Commands
 
 | Command        | Action                              |
@@ -24,13 +33,14 @@ If `astro` fails writing telemetry config in restricted environments, run with `
 - `src/types/resume.ts` — TypeScript interfaces for the JSON shape.
 - `src/layouts/BaseLayout.astro` — Shell: SEO head, theme script, header, footer, main landmark.
 - `src/components/` — Reusable UI (navigation, cards, contact block, SEO).
-- `src/pages/` — File-based routes (`/`, `/experience`, `/projects`, `/skills`, `/education`, `/about`).
+- `src/pages/` — File-based routes (`/`, `/resume`, `/projects`).
 - `public/` — Static assets (favicon, `cv_joaopaulo_en.pdf`, `robots.txt`).
 
 ## Editing content
 
-1. Update `src/data/resume.json` only.
-2. Rebuild or refresh dev server; pages are generated from that data.
+1. Update `src/data/resume.json` for experience, projects, skills, etc.
+2. Set contact URLs and the reveal gate in `.env` (see **Environment**).
+3. Rebuild or refresh dev server; pages are generated from that data.
 3. Optional: add `image` to `SEO` on a page later for Open Graph (set `site` in `astro.config.mjs` to your real domain).
 
 ## Theming

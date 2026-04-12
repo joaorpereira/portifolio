@@ -2,9 +2,9 @@
   "basics": {
     "name": "João Paulo Rodrigues Pereira",
     "label": "Software Engineer | Frontend Developer | Full Stack Developer",
-    "email": "rpjoaopaulo28@gmail.com",
-    "github": "github.com/joaorpereira",
-    "linkedin": "linkedin.com/in/joaorpereira",
+    "email": "",
+    "github": "",
+    "linkedin": "",
     "summary": "Software Engineer with 4+ years of experience in frontend and full stack development, specializing in React, Next.js, TypeScript, and Node.js. Strong experience in performance optimization, scalable architecture, e-commerce platforms, and modern web applications. Experienced in Agile methodologies, testing, accessibility (WCAG), and cloud environments.",
     "profileImage": "/images/joao-profile.png",
     "resumePdf": "/cv_joaopaulo_en.pdf"
