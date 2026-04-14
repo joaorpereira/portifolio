@@ -76,7 +76,7 @@
       "period": "2024 – Present",
       "summary": "Frontend work on a climate careers platform focused on performance, cost efficiency, and reliable delivery.",
       "image": null,
-      "video": null,
+      "video": "https://youtu.be/SvjwvOcCUJY",
       "technologies": ["React", "TypeScript", "Playwright", "Mixpanel"],
       "highlights": [
         "Improved Lighthouse performance score by 23.6% (72 → 89)",
