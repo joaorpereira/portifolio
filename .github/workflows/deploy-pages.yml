@@ -19,8 +19,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
-      PUBLIC_BASE_PATH: ${{ vars.PUBLIC_BASE_PATH }}
       PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
       PUBLIC_CONTACT_GITHUB: ${{ vars.PUBLIC_CONTACT_GITHUB }}
       PUBLIC_CONTACT_LINKEDIN: ${{ vars.PUBLIC_CONTACT_LINKEDIN }}

@@ -52,20 +52,11 @@ Dark mode uses Tailwind’s `class` strategy. A small inline script sets the ini
 Build output is plain static HTML in `dist/`, and this repo includes a workflow at `.github/workflows/deploy-pages.yml` to publish it to GitHub Pages.
 
 1. In GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**.
-2. In **Settings → Secrets and variables → Actions → Variables**, add:
-   - `PUBLIC_SITE_URL`:
-     - `https://<username>.github.io` for default Pages URL, or
-     - your custom domain (for example `https://joaorpereira.dev`)
-   - `PUBLIC_BASE_PATH`:
-     - `/<repo-name>` for a project site (for example `/joao-portfolio`), or
-     - `/` when using a user/org Pages repo or a root custom domain
-   - Optional contact/reveal variables from `.env.example` (`PUBLIC_CONTACT_*`, `PUBLIC_SENSITIVE_QUERY_*`) if you want CI build-time values.
+2. In **Settings → Secrets and variables → Actions → Variables**, add optional `PUBLIC_CONTACT_*` and `PUBLIC_SENSITIVE_QUERY_*` values from `.env.example` if you want CI build-time overrides.
+   - `PUBLIC_SITE_URL` and `PUBLIC_BASE_PATH` are auto-derived in GitHub Actions from `GITHUB_REPOSITORY`.
+   - Only set `PUBLIC_SITE_URL` / `PUBLIC_BASE_PATH` when you intentionally need to override defaults (for example custom domain or non-standard base path).
 3. Push to `main` (or run the workflow manually from the **Actions** tab).
 4. After the workflow succeeds, your site is live on GitHub Pages.
 
 If you use a custom domain, also configure DNS and (optionally) add a `public/CNAME` file with your domain.
 
-## Optional next steps
-
-- Add `@astrojs/sitemap` if you want an auto-generated sitemap (not included to keep dependencies minimal).
-- Add `@astrojs/mdx` if you want long-form writing alongside JSON-driven pages.
