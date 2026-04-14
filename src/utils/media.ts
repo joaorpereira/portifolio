@@ -7,7 +7,7 @@ export function getVideoEmbedSrc(url: string): { kind: 'iframe'; src: string } |
   if (!trimmed) return null;
 
   if (/\.(mp4|webm|ogg)(\?|$)/i.test(trimmed)) {
-    return { kind: 'video', src: trimmed.startsWith('http') || trimmed.startsWith('/') ? trimmed : `/${trimmed}` };
+    return { kind: 'video', src: resolveMediaSrc(trimmed) };
   }
 
   let parsed: URL;
@@ -44,8 +44,17 @@ export function getVideoEmbedSrc(url: string): { kind: 'iframe'; src: string } |
 }
 
 export function resolveMediaSrc(src: string): string {
-  const t = src.trim();
-  if (!t) return '';
-  if (t.startsWith('http://') || t.startsWith('https://') || t.startsWith('/')) return t;
-  return `/${t}`;
+  const trimmed = src.trim();
+  if (!trimmed) return '';
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+
+  const normalizedPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+  if (!basePath) return normalizedPath;
+
+  if (normalizedPath === basePath || normalizedPath.startsWith(`${basePath}/`)) {
+    return normalizedPath;
+  }
+
+  return `${basePath}${normalizedPath}`;
 }
