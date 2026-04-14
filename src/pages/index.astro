@@ -6,6 +6,13 @@ import { withHttps } from '@/utils/links';
 import { resolveMediaSrc } from '@/utils/media';
 
 const { basics, experience, projects } = resume;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const withBase = (path: string): string => {
+  if (!basePath) return path;
+  if (path === '/') return `${basePath}/`;
+  return `${basePath}${path}`;
+};
 
 const highlights = [
   {
@@ -73,7 +80,7 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a
-            href="/resume"
+            href={withBase('/resume')}
             data-reveal-link
             class="inline-flex items-center justify-center rounded-lg bg-ink-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ink-800 dark:bg-white dark:text-ink-950 dark:hover:bg-ink-100"
           >
@@ -110,7 +117,7 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
     <a
       data-sensitive
       data-reveal-link
-      href="/projects"
+      href={withBase('/projects')}
       class="mt-4 inline-block text-sm font-semibold text-accent underline-offset-4 hover:underline dark:text-accent-muted"
     >
       See selected projects →
@@ -144,7 +151,7 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
       <a
         data-sensitive
         data-reveal-link
-        href="/projects"
+        href={withBase('/projects')}
         class="text-sm font-semibold text-accent underline-offset-4 hover:underline dark:text-accent-muted"
       >
         All projects
@@ -164,7 +171,7 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
               <a
                 data-sensitive-card
                 data-reveal-link
-                href="/projects"
+                href={withBase('/projects')}
                 class:list={[cardShell, cardInteractive, 'group']}
               >
                 <div class="relative aspect-[16/10] w-full overflow-hidden border-b border-ink-200 bg-ink-100 dark:border-ink-800 dark:bg-ink-950">
@@ -184,7 +191,7 @@ const profileSrc = basics.profileImage ? resolveMediaSrc(basics.profileImage) : 
                       aria-hidden="true"
                     >
                       <img
-                        src="/images/project-placeholder.svg"
+                        src={withBase('/images/project-placeholder.svg')}
                         alt=""
                         width={640}
                         height={400}

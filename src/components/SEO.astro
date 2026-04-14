@@ -9,11 +9,20 @@ interface Props {
 
 const { title, description, path = '/', image } = Astro.props;
 const site = Astro.site?.href.replace(/\/$/, '') ?? '';
-const canonical = new URL(path, site || Astro.url.origin).href;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const canonicalPath = path.startsWith('/') && basePath ? `${basePath}${path}` : path;
+const canonical = new URL(canonicalPath, site || Astro.url.origin).href;
 const origin = site || Astro.url.origin;
 const ogImage =
   image &&
-  (image.startsWith('http') ? image : new URL(image.replace(/^\//, ''), `${origin}/`).href);
+  (image.startsWith('http')
+    ? image
+    : new URL(
+        image.startsWith('/') && basePath
+          ? `${basePath}${image}`.replace(/^\//, '')
+          : image.replace(/^\//, ''),
+        `${origin}/`
+      ).href);
 const fullTitle = path === '/' ? title : `${title} · João Paulo Pereira`;
 const twitterCard = ogImage ? 'summary_large_image' : 'summary';
 ---

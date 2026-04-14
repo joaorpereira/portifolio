@@ -2,20 +2,34 @@
 import Container from '@/components/Container.astro';
 
 const pathname = Astro.url.pathname;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-type NavItem = { href: string; label: string; sensitive?: boolean; revealLink?: boolean };
+type NavItem = { path: string; label: string; sensitive?: boolean; revealLink?: boolean };
 
 const links: NavItem[] = [
-  { href: '/', label: 'Home', revealLink: true },
-  { href: '/resume', label: 'Resume', revealLink: true },
-  { href: '/projects', label: 'Projects', sensitive: true, revealLink: true },
-  { href: '/#contact', label: 'Contact', sensitive: true, revealLink: true },
+  { path: '/', label: 'Home', revealLink: true },
+  { path: '/resume', label: 'Resume', revealLink: true },
+  { path: '/projects', label: 'Projects', sensitive: true, revealLink: true },
+  { path: '/#contact', label: 'Contact', sensitive: true, revealLink: true },
 ];
 
-function isActive(href: string): boolean {
-  const pathPart = href.split('?')[0].split('#')[0];
-  if (pathPart === '/') return pathname === '/';
-  return pathname === pathPart || pathname.startsWith(`${pathPart}/`);
+const appPathname =
+  !basePath || pathname === basePath
+    ? pathname === basePath ? '/' : pathname
+    : pathname.startsWith(`${basePath}/`)
+      ? pathname.slice(basePath.length) || '/'
+      : pathname;
+
+function withBase(path: string): string {
+  if (!basePath) return path;
+  if (path === '/') return `${basePath}/`;
+  return `${basePath}${path}`;
+}
+
+function isActive(path: string): boolean {
+  const pathPart = path.split('?')[0].split('#')[0];
+  if (pathPart === '/') return appPathname === '/';
+  return appPathname === pathPart || appPathname.startsWith(`${pathPart}/`);
 }
 ---
 
@@ -31,7 +45,7 @@ function isActive(href: string): boolean {
 >
   <Container class="flex h-14 items-center justify-between gap-4 sm:h-16">
     <a
-      href="/"
+      href={withBase('/')}
       data-reveal-link
       class="font-display text-sm font-semibold tracking-tight text-ink-950 transition hover:text-accent dark:text-ink-50 dark:hover:text-accent-muted sm:text-base"
     >
@@ -41,18 +55,18 @@ function isActive(href: string): boolean {
     <nav aria-label="Primary" class="flex items-center gap-1 sm:gap-2">
       <ul class="flex flex-wrap items-center justify-end gap-0.5 text-sm sm:gap-1 sm:text-[0.9375rem]">
         {
-          links.map(({ href, label, sensitive, revealLink }) => (
+          links.map(({ path, label, sensitive, revealLink }) => (
             <li {...(sensitive ? { 'data-sensitive': '' } : {})}>
               <a
-                href={href}
+                href={withBase(path)}
                 {...(revealLink ? { 'data-reveal-link': '' } : {})}
                 class:list={[
                   'rounded-md px-2 py-1.5 font-medium transition-colors sm:px-2.5',
-                  isActive(href)
+                  isActive(path)
                     ? 'bg-ink-200/80 text-ink-950 dark:bg-ink-800 dark:text-ink-50'
                     : 'text-ink-600 hover:bg-ink-100 hover:text-ink-950 dark:text-ink-300 dark:hover:bg-ink-900 dark:hover:text-white',
                 ]}
-                aria-current={isActive(href) ? 'page' : undefined}
+                aria-current={isActive(path) ? 'page' : undefined}
               >
                 {label}
               </a>

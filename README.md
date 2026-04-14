@@ -8,7 +8,7 @@ Static, recruiter-friendly portfolio built with **Astro**, **TypeScript**, and *
 
 ## Environment
 
-Use a repo-root **`.env`** for `npm run dev` and for variables that **`infra/deploy.sh`** sources (bucket, distribution ID, AWS profile). Add **`.env.production`** for `npm run build` / `astro build`: Vite loads `.env` then `.env.production`, so production `PUBLIC_*` values can match or override local ones. Both files are gitignored; start from [`.env.example`](./.env.example).
+Use a repo-root **`.env`** for `npm run dev`. Add **`.env.production`** for `npm run build` / `astro build`: Vite loads `.env` then `.env.production`, so production `PUBLIC_*` values can match or override local ones. Both files are gitignored; start from [`.env.example`](./.env.example).
 
 - **`PUBLIC_CONTACT_*`** — email, GitHub, and LinkedIn strings merged into `resume` at build time (not stored in `resume.json`).
 - **`PUBLIC_SENSITIVE_QUERY_KEY`** / **`PUBLIC_SENSITIVE_QUERY_VALUE`** — URL query used by the client-side reveal gate (also baked into the built HTML/JS).
@@ -47,9 +47,23 @@ If `astro` fails writing telemetry config in restricted environments, run with `
 
 Dark mode uses Tailwind’s `class` strategy. A small inline script sets the initial theme from `localStorage` or `prefers-color-scheme`; the header button toggles and persists the choice.
 
-## Deployment
+## Deployment (GitHub Pages)
 
-Build output is plain static HTML in `dist/`. Deploy to any static host (Cloudflare Pages, Netlify, GitHub Pages, etc.). Set `site` in `astro.config.mjs` to your canonical URL for correct absolute links in metadata.
+Build output is plain static HTML in `dist/`, and this repo includes a workflow at `.github/workflows/deploy-pages.yml` to publish it to GitHub Pages.
+
+1. In GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**.
+2. In **Settings → Secrets and variables → Actions → Variables**, add:
+   - `PUBLIC_SITE_URL`:
+     - `https://<username>.github.io` for default Pages URL, or
+     - your custom domain (for example `https://joaorpereira.dev`)
+   - `PUBLIC_BASE_PATH`:
+     - `/<repo-name>` for a project site (for example `/joao-portfolio`), or
+     - `/` when using a user/org Pages repo or a root custom domain
+   - Optional contact/reveal variables from `.env.example` (`PUBLIC_CONTACT_*`, `PUBLIC_SENSITIVE_QUERY_*`) if you want CI build-time values.
+3. Push to `main` (or run the workflow manually from the **Actions** tab).
+4. After the workflow succeeds, your site is live on GitHub Pages.
+
+If you use a custom domain, also configure DNS and (optionally) add a `public/CNAME` file with your domain.
 
 ## Optional next steps
 
