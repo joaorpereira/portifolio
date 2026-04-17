@@ -15,8 +15,9 @@ interface Props {
 
 const { title, description, path = '/', resume } = Astro.props;
 
-const sensitiveQueryKey = import.meta.env.PUBLIC_SENSITIVE_QUERY_KEY ?? 'password';
-const sensitiveQueryValue = import.meta.env.PUBLIC_SENSITIVE_QUERY_VALUE ?? 'veterano';
+// Use || not ?? — CI often passes "" for unset env vars; "" ?? 'fallback' stays "".
+const sensitiveQueryKey = import.meta.env.PUBLIC_SENSITIVE_QUERY_KEY?.trim() || 'password';
+const sensitiveQueryValue = import.meta.env.PUBLIC_SENSITIVE_QUERY_VALUE?.trim() || 'veterano';
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const withBase = (routePath: string): string => {
