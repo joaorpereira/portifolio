@@ -16,7 +16,7 @@ interface Props {
 const { title, description, path = '/', resume } = Astro.props;
 
 const sensitiveQueryKey = import.meta.env.PUBLIC_SENSITIVE_QUERY_KEY ?? 'password';
-const sensitiveQueryValue = import.meta.env.PUBLIC_SENSITIVE_QUERY_VALUE ?? '';
+const sensitiveQueryValue = import.meta.env.PUBLIC_SENSITIVE_QUERY_VALUE ?? 'veterano';
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const withBase = (routePath: string): string => {
