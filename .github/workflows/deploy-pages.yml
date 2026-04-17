@@ -22,8 +22,9 @@ jobs:
       PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
       PUBLIC_CONTACT_GITHUB: ${{ vars.PUBLIC_CONTACT_GITHUB }}
       PUBLIC_CONTACT_LINKEDIN: ${{ vars.PUBLIC_CONTACT_LINKEDIN }}
-      PUBLIC_SENSITIVE_QUERY_KEY: ${{ vars.PUBLIC_SENSITIVE_QUERY_KEY }}
-      PUBLIC_SENSITIVE_QUERY_VALUE: ${{ vars.PUBLIC_SENSITIVE_QUERY_VALUE }}
+      # CI never reads .env.production — use repo Actions Variables or Secrets (not only Environment-scoped).
+      PUBLIC_SENSITIVE_QUERY_KEY: ${{ vars.PUBLIC_SENSITIVE_QUERY_KEY || 'password' }}
+      PUBLIC_SENSITIVE_QUERY_VALUE: ${{ vars.PUBLIC_SENSITIVE_QUERY_VALUE || secrets.PUBLIC_SENSITIVE_QUERY_VALUE }}
       ASTRO_TELEMETRY_DISABLED: 1
     steps:
       - name: Checkout
@@ -37,6 +38,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Check reveal gate is set for production
+        run: |
+          if [ -z "$PUBLIC_SENSITIVE_QUERY_VALUE" ]; then
+            echo "::warning::PUBLIC_SENSITIVE_QUERY_VALUE is empty. Add it under Settings → Secrets and variables → Actions → Variables (repository) or Secrets named PUBLIC_SENSITIVE_QUERY_VALUE, then redeploy. The URL ?password=… will not unlock until the next build picks it up."
+          fi
 
       - name: Build
         run: npm run build
